@@ -1,0 +1,13 @@
+{
+  "taxes": [
+    {
+      "taxname": "CGST 2.5%",
+      "taxValue": 14.59
+    },
+    {
+      "taxname": "SGST 2.5%",
+      "taxValue": 14.59
+    }
+  ]
+}
+

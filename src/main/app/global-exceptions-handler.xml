@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd">
+   <choice-exception-strategy name="global-exception-Strategy">
+        
+		<catch-exception-strategy when="#[exception.causedBy(com.mulesoft.weave.mule.exception.WeaveExecutionException)]" doc:name="Dataweave Exception">
+            <set-property propertyName="http.status" value="500" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="DataWeave!" doc:name="Set Status Message"/>
+            <logger message="Dataweave Exception" level="ERROR" doc:name="Log Exception to Console"/>
+            <set-variable variableName="exceptionObject" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionClass" value="#['DW EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; : 500, &quot;exceptionCause&quot; : &quot;#[flowVars.exceptionObject]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception payload"/>
+		</catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.module.apikit.exception.BadRequestException)]" doc:name="Schema Validation Exception">
+            <set-property propertyName="http.status" value="400" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Bad request!" doc:name="Set Status Message"/>
+            <logger message="Schema validation Exception " level="INFO" doc:name="Log Exception to Console"/>
+            <set-variable variableName="exceptionClass" value="#['SCHEMA_EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-variable variableName="exceptionObject" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-payload value="{ &quot;statusCode&quot; :  400, &quot;exceptionCause&quot; : &quot;#[flowVars.exceptionObject]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; } " doc:name="Set Exception Payload"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy when="#[exception.causedBy(org.mule.transport.NullPayload)]" doc:name="Null payload Exception">
+            <set-property propertyName="http.status" value="400" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Bad request!" doc:name="Set Status Message"/>
+            <logger message="Null payload Exception" level="INFO" doc:name="Log Exception to console "/>
+            <set-variable variableName="exceptionCause" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionObject" value="#['NULL EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; :  400, &quot;exceptionCause&quot; : &quot;#[flowVars.exceptionObject]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception  Payload"/>
+        </catch-exception-strategy>
+        
+        <catch-exception-strategy doc:name="Invalid Query Param Exception" when="#[exception.causedBy(org.mule.module.apikit.exception.InvalidQueryParameterException)]">
+        <set-property propertyName="http.status" value="400" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Bad request!" doc:name="Set Status Message"/>
+            <logger message="Invalid Query Param  Exception" level="INFO" doc:name="Log Exception to console "/>
+            <set-variable variableName="exceptionCause" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionObject" value="#['INVALID QUERYPARAM EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; :  400, &quot;exceptionCause&quot; : &quot;#[flowVars.exceptionObject]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception  Payload"/>
+        </catch-exception-strategy>
+        <catch-exception-strategy doc:name="Not Found Exception" when="#[exception.causedBy(org.mule.module.apikit.exception.NotFoundException)]">
+        <set-property propertyName="http.status" value="404" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Not found!" doc:name="Set Status Message"/>
+            <logger message="Not Found  Exception" level="INFO" doc:name="Log Exception to console "/>
+            <set-variable variableName="exceptionCause" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionObject" value="#['NOT FOUND EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; :  404, &quot;exceptionCause&quot; : &quot;#[exception.getMessage()]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception  Payload"/>
+        </catch-exception-strategy>
+        
+        <catch-exception-strategy doc:name="Method Not Allowed  Exception" when="#[exception.causedBy(org.mule.module.apikit.exception.MethodNotAllowedException)]">
+        <set-property propertyName="http.status" value="405" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Not found!" doc:name="Set Status Message"/>
+            <logger message="Method not allowed  Exception" level="INFO" doc:name="Log Exception to console "/>
+            <set-variable variableName="exceptionCause" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionObject" value="#['METHOD NOT ALLOWED EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; :  405, &quot;exceptionCause&quot; : &quot;#[exception.getMessage()]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception  Payload"/>
+        </catch-exception-strategy>
+       
+         <catch-exception-strategy doc:name="Unsupported Media Type  Exception" when="#[exception.causedBy(org.mule.module.apikit.exception.UnsupportedMediaTypeException)]">
+        <set-property propertyName="http.status" value="415" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Unsupported Media Type!" doc:name="Set Status Message"/>
+            <logger message="Method not allowed  Exception" level="INFO" doc:name="Log Exception to console "/>
+            <set-variable variableName="exceptionCause" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionObject" value="#['UNSUPPORTED MEDIA TYPE  EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; :  415, &quot;exceptionCause&quot; : &quot;#[exception.getMessage()]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception  Payload"/>
+        </catch-exception-strategy>
+       
+        <catch-exception-strategy doc:name="Not Acceptable  Exception" when="#[exception.causedBy(org.mule.module.apikit.exception.NotAcceptableException)]">
+        <set-property propertyName="http.status" value="406" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Not Acceptable!" doc:name="Set Status Message"/>
+            <logger message="Method not allowed  Exception" level="INFO" doc:name="Log Exception to console "/>
+            <set-variable variableName="exceptionCause" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionObject" value="#['NOT ACCEPTABLE  EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; :  406, &quot;exceptionCause&quot; : &quot;#[exception.getMessage()]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception  Payload"/>
+        </catch-exception-strategy>
+       
+       <catch-exception-strategy doc:name="Connection Exception" when="#[exception.causedBy(java.net.ConnectException)]">
+            <set-property propertyName="http.status" value="500" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Server Error!" doc:name="Set Status Message"/>
+             <logger message="Connection  Exception" level="INFO" doc:name="Log Exception to console "/>
+            <set-variable variableName="exceptionCause" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionClass" value="#['CONNECTION EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; :  500, &quot;exceptionCause&quot; : &quot;#[exception.getMessage()]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception  Payload"/>
+            </catch-exception-strategy>
+           
+            <catch-exception-strategy doc:name="Default Exception Handler">
+             <set-property propertyName="http.status" value="500" doc:name="Set Status Code"/>
+            <set-property propertyName="http.reason" value="Exception!" doc:name="Set Status Message"/>
+            <logger message="Default exception handler catch all." level="ERROR" doc:name="Log Default Catch-All to Console"/>
+            <set-variable variableName="exceptionCause" value="#[exception.cause != null ? exception.cause : exception]" doc:name="Set Exception Cause"/>
+            <set-variable variableName="exceptionObject" value="#['CONNECTION EXCEPTION']" doc:name="Set Exception Class"/>
+            <set-payload value="{ &quot;statusCode&quot; :  500, &quot;exceptionCause&quot; : &quot;#[exception.getMessage()]&quot;, &quot;exceptionClass&quot; : &quot;#[flowVars.exceptionClass]&quot; , &quot;flowName&quot; : &quot;#[exception.event.flowConstruct.name]&quot; }  " doc:name="Set exception  Payload"/>           
+        </catch-exception-strategy>
+       
+    </choice-exception-strategy>
+</mule>

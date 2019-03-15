@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
+	xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<context:property-placeholder location="properties/dev.properties" />
+	<http:listener-config name="Cards-Foodcourt-System-API-HTTP-Listener-Config"
+		host="${listener.host}" port="${listener.port}" doc:name="HTTP Listener Configuration" connectionIdleTimeout="${request.connection.idle.timeout}"/>
+	<apikit:config name="Cards_Foodcourt_System_API_Config"
+		raml="cards_foodcourt_system_api.raml" consoleEnabled="false"
+		doc:name="Router" keepRamlBaseUri="false">
+        <apikit:flow-mapping resource="/foodcourt/enquiry" action="post" content-type="application/json" flow-ref="postFoodcourtEnquiryFlow"/>
+        <apikit:flow-mapping resource="/foodcourt/redemption" action="post" content-type="application/json" flow-ref="postFoodcourtRedemptionFlow"/>
+
+	</apikit:config>
+	<ws:consumer-config name="Cards-Foodcourt-System-API-Web-Service-Consumer"
+		wsdlLocation=".\src\main\wsdl\food-court-wsdl.xml" service="PrepaidCard"
+		port="PrepaidCard_Port" serviceAddress="${service.address}" doc:name="Web Service Consumer" />
+
+
+</mule>

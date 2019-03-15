@@ -1,0 +1,27 @@
+{
+
+         "cardDetails": {
+           "card_no": "",
+           "card_pin": "",
+           "card_amt": 100.67
+         },
+       "storeId": "",
+       "terminalId": "",
+       "txn_Details": {
+          "order_id": "",
+          "order_dateTime": "",
+          "order_type": "",
+          "check_no": "",
+          "receipt_no": "",
+          "invoice_no": ""
+       },
+      "customerDetails": {
+         "name": "",
+         "contactNo": ""
+      },
+      "sales_rep_id": "",
+      "source_channel_name": "",
+      "target_channel_name": "",
+      "createdBy": "login user to POS systems",
+      "createdDateTime": "" 
+    }

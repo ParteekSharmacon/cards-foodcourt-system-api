@@ -1,0 +1,20 @@
+{
+  "Store": {
+    "id": "WE3455",
+    "name": "YUM",
+    "address1": "34",
+    "address2": "bridhavn colony",
+    "address3": "whitefiled road",
+    "address4": "sds",
+    "address5": "sds",
+    "address6": "dff",
+    "locality": "koramangala",
+    "city": "bangalore",
+    "zip_code": "34568",
+    "country": "India",
+    "geo": {
+      "latitude": 102.3,
+      "logitutde": 102.56987
+    }
+  }
+}

@@ -1,0 +1,18 @@
+#%RAML 1.0 Library
+usage:  provides a set of reusable object for payments
+  
+types:
+  paymentDetails:
+   type: object
+   properties:
+     method_id?:
+      type: integer
+      maximum: 2
+     method_name?:
+      type: string
+      maxLength: 10
+     payment_amount?:
+      type: number
+      multipleOf: 0.01
+      displayName: payment_amount
+      description: payment_amount

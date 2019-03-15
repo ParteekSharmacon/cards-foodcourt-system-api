@@ -1,0 +1,159 @@
+<definitions targetNamespace="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard">
+   <types>
+      <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard" xmlns="http://www.w3.org/2001/XMLSchema">
+         <element name="PrepaidCard_Redem">
+            <complexType>
+               <sequence>
+                  <element minOccurs="1" maxOccurs="1" name="cardno" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="cardamt" type="decimal"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="PrepaidCard_Redem_Result">
+            <complexType>
+               <sequence>
+                  <element minOccurs="1" maxOccurs="1" name="return_value" type="string"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="Prepaid_Card_Redemption">
+            <complexType>
+               <sequence>
+                  <element minOccurs="1" maxOccurs="1" name="cardno" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="cardamt" type="decimal"/>
+                  <element minOccurs="1" maxOccurs="1" name="recNo" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="lStoreno" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="lTerminal" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="transNo" type="int"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="Prepaid_Card_Redemption_Result">
+            <complexType>
+               <sequence>
+                  <element minOccurs="1" maxOccurs="1" name="return_value" type="string"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="PrepaidCard_Balance">
+            <complexType>
+               <sequence>
+                  <element minOccurs="1" maxOccurs="1" name="cardno" type="string"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="PrepaidCard_Balance_Result">
+            <complexType>
+               <sequence>
+                  <element minOccurs="1" maxOccurs="1" name="return_value" type="decimal"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="Prepaid_Card_Refund">
+            <complexType>
+               <sequence>
+                  <element minOccurs="1" maxOccurs="1" name="cardno" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="cardamt" type="decimal"/>
+                  <element minOccurs="1" maxOccurs="1" name="recNo" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="lStoreno" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="lTerminal" type="string"/>
+                  <element minOccurs="1" maxOccurs="1" name="transNo" type="int"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="Prepaid_Card_Refund_Result">
+            <complexType>
+               <sequence>
+                  <element minOccurs="1" maxOccurs="1" name="return_value" type="string"/>
+               </sequence>
+            </complexType>
+         </element>
+      </schema>
+   </types>
+   <message name="PrepaidCard_Redem">
+      <part name="parameters" element="tns:PrepaidCard_Redem"/>
+   </message>
+   <message name="PrepaidCard_Redem_Result">
+      <part name="parameters" element="tns:PrepaidCard_Redem_Result"/>
+   </message>
+   <message name="Prepaid_Card_Redemption">
+      <part name="parameters" element="tns:Prepaid_Card_Redemption"/>
+   </message>
+   <message name="Prepaid_Card_Redemption_Result">
+      <part name="parameters" element="tns:Prepaid_Card_Redemption_Result"/>
+   </message>
+   <message name="PrepaidCard_Balance">
+      <part name="parameters" element="tns:PrepaidCard_Balance"/>
+   </message>
+   <message name="PrepaidCard_Balance_Result">
+      <part name="parameters" element="tns:PrepaidCard_Balance_Result"/>
+   </message>
+   <message name="Prepaid_Card_Refund">
+      <part name="parameters" element="tns:Prepaid_Card_Refund"/>
+   </message>
+   <message name="Prepaid_Card_Refund_Result">
+      <part name="parameters" element="tns:Prepaid_Card_Refund_Result"/>
+   </message>
+   <portType name="PrepaidCard_Port">
+      <operation name="PrepaidCard_Redem">
+         <input name="PrepaidCard_Redem" message="tns:PrepaidCard_Redem"/>
+         <output name="PrepaidCard_Redem_Result" message="tns:PrepaidCard_Redem_Result"/>
+      </operation>
+      <operation name="Prepaid_Card_Redemption">
+         <input name="Prepaid_Card_Redemption" message="tns:Prepaid_Card_Redemption"/>
+         <output name="Prepaid_Card_Redemption_Result" message="tns:Prepaid_Card_Redemption_Result"/>
+      </operation>
+      <operation name="PrepaidCard_Balance">
+         <input name="PrepaidCard_Balance" message="tns:PrepaidCard_Balance"/>
+         <output name="PrepaidCard_Balance_Result" message="tns:PrepaidCard_Balance_Result"/>
+      </operation>
+      <operation name="Prepaid_Card_Refund">
+         <input name="Prepaid_Card_Refund" message="tns:Prepaid_Card_Refund"/>
+         <output name="Prepaid_Card_Refund_Result" message="tns:Prepaid_Card_Refund_Result"/>
+      </operation>
+   </portType>
+   <binding name="PrepaidCard_Binding" type="tns:PrepaidCard_Port">
+      <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      <operation name="PrepaidCard_Redem">
+         <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard:PrepaidCard_Redem" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         <input name="PrepaidCard_Redem">
+            <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         </input>
+         <output name="PrepaidCard_Redem_Result">
+            <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         </output>
+      </operation>
+      <operation name="Prepaid_Card_Redemption">
+         <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard:Prepaid_Card_Redemption" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         <input name="Prepaid_Card_Redemption">
+            <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         </input>
+         <output name="Prepaid_Card_Redemption_Result">
+            <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         </output>
+      </operation>
+      <operation name="PrepaidCard_Balance">
+         <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard:PrepaidCard_Balance" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         <input name="PrepaidCard_Balance">
+            <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         </input>
+         <output name="PrepaidCard_Balance_Result">
+            <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         </output>
+      </operation>
+      <operation name="Prepaid_Card_Refund">
+         <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard:Prepaid_Card_Refund" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         <input name="Prepaid_Card_Refund">
+            <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         </input>
+         <output name="Prepaid_Card_Refund_Result">
+            <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+         </output>
+      </operation>
+   </binding>
+   <service name="PrepaidCard">
+      <port name="PrepaidCard_Port" binding="tns:PrepaidCard_Binding">
+         <address location= "${service.address}" xmlns="http://schemas.xmlsoap.org/wsdl/soap/"/>
+      </port>
+   </service>
+</definitions>

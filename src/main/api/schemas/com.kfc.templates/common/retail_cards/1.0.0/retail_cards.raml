@@ -1,0 +1,19 @@
+#%RAML 1.0 Library
+usage: provides resuable datatypes for card details object
+
+types:
+  cards:
+   type: object
+   properties:
+     card_no:
+      type: string
+      description: card_no
+      maxLength: 30
+     card_pin:
+      type: string
+      description: card_pin
+      maxLength: 10
+     card_amt:
+      type: number
+      multipleOf: 0.01
+      description: card_amt

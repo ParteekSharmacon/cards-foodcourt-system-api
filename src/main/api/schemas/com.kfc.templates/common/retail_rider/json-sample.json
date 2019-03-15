@@ -1,0 +1,12 @@
+{
+  "riderDetails": {
+    "name": "ravi",
+    "contact_no": "23232423",
+    "vehicle_number": "ed345",
+    "vehicle_name": "suzuki",
+    "geo": {
+      "latitude": 11.23569,
+      "longitude": 77.626907
+    }
+  }
+}

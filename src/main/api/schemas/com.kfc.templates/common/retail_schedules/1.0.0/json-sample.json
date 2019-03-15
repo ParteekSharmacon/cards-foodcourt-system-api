@@ -1,0 +1,7 @@
+{
+  "schedule_times": {
+    "eta_for_pickup": "30",
+    "eta_to_drop": "10",
+    "total_eta": "40"
+  }
+}

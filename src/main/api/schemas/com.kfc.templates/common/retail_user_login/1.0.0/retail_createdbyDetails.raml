@@ -1,0 +1,23 @@
+#%RAML 1.0 Library
+usage: provides a set of reusable data types that commonly occur in user login  definitions
+types: 
+ createdBy:
+  displayName: createdBy
+  description: login user to POS systems
+  type: string
+  maxLength: 50
+ createdDateTime: 
+  displayName: createdDateTime
+  description: yyyy-MM-dd HH24:mm
+  type: string
+  maxLength: 30
+ source_channel_name:
+  displayName: source_channel_name
+  description: Source channel name from which transaction is made
+  type: string
+  maxLength: 100
+ target_channel_name:
+  displayName: target_channel_name
+  description: Target channel name for which transaction is made
+  type: string
+  maxLength: 100

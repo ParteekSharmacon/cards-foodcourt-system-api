@@ -1,0 +1,19 @@
+#%RAML 1.0 Library
+usage: provides a set of reusable data types that commonly occur in taxe details  definitions
+
+types: 
+ taxDetails:
+  type: object
+  properties:
+    taxname:
+     displayName: taxname
+     description: taxname 
+     type: string
+     maxLength: 15
+    taxValue:
+     displayName: taxValue
+     description: tax value
+     type: number
+     multipleOf: 0.01
+      
+ 

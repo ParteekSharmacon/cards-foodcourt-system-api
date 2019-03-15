@@ -1,0 +1,34 @@
+#%RAML 1.0 Library
+title: rider
+
+uses:
+  geo: <<path to be added>>
+
+riderDetails:
+  type: object
+  properties:
+    name:
+      type: string
+      description: |
+        name 
+      maxLength: 100
+    contact_no:
+      type: string
+      description: |
+       contact no 
+      maxLength: 10
+    vehicle_number:
+      type: string
+      description: |
+       vehicle number 
+      maxLength: 20
+    vehicle_name:
+      type: string
+      description: |
+       vehicle name
+      maxLength: 15
+    geo:
+     type: geo.geoObject
+     description: geo details
+
+

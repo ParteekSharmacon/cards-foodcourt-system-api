@@ -1,0 +1,68 @@
+#%RAML 1.0 Library
+usage: provides a set  data types that  occur in cards request body
+
+uses:
+  transaction: /schemas/com.kfc.templates/common/retail_txn_details/1.0.0/retail_txn_details.raml
+  cardDetails: /schemas/com.kfc.templates/common/retail_cards/1.0.0/retail_cards.raml
+  userLogin: /schemas/com.kfc.templates/common/retail_user_login/1.0.0/retail_createdbyDetails.raml
+  store: /schemas/com.kfc.templates/common/retail_store/1.0.0/retail_store.raml
+  terminal: /schemas/com.kfc.templates/common/retail_terminal/1.0.0/retail_terminal.raml
+  customer: /schemas/com.kfc.templates/common/retail_customer/1.0.0/retail_customer.raml
+
+
+
+types:
+ request:
+  description: response body of card
+  additionalProperties: false
+  properties:
+   txn_Details:
+    displayName: txn_Details
+    description: txn_Details object
+    type: transaction.txn_details
+   storeId:
+    displayName: storeId
+    description: Store ID
+    type: store.id
+    
+   terminalId:
+    displayName: terminalId
+    description: terminalId
+    type: terminal.id
+    
+   sales_rep_id?:
+    displayName: sales_rep_id
+    description: Sales representative  id
+    type: string 
+    maxLength: 30  
+   cardDetails:
+    displayName: cardDetails
+    type: cardDetails.cards
+   customerDetails:
+    displayName: customerDetails
+    description: customerDetails object
+    type: object
+    properties:
+      name:
+       displayName: name
+       description: Customer name
+       type: customer.name
+
+      contactNo:
+       displayName: contactNo
+       description: Mobile number of the customer
+       type: customer.contactNo
+   source_channel_name:
+    displayName: source_channel_name
+    type: userLogin.source_channel_name
+   target_channel_name:
+    displayName: target_channel_name
+    type: userLogin.target_channel_name
+   createdBy:
+    type: userLogin.createdBy
+   createdDateTime:
+    type: userLogin.createdDateTime
+   
+     
+    
+  

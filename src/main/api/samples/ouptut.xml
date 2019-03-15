@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<ns0:PrepaidCard_Balance xmlns:ns0="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard">
+  <ns0:cardno>????</ns0:cardno>
+</ns0:PrepaidCard_Balance>

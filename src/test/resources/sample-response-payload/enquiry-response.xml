@@ -1,0 +1,11 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+<soap:Header><Authentication xmlns="http://tempuri.org/"> 
+<Password>Yum@1234</Password> 
+<UserName>yumdata</UserName> 
+<Domain>dil-rjcorp</Domain>
+ </Authentication>
+ </soap:Header>
+ <soap:Body>
+ <ns0:PrepaidCard_Balance xmlns:ns0="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard">
+  <ns0:cardno>123</ns0:cardno>
+</ns0:PrepaidCard_Balance></soap:Body></soap:Envelope>

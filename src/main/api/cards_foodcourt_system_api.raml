@@ -1,0 +1,93 @@
+#%RAML 1.0
+title: Cards Foodcourt System API
+baseUri: /foodcourt
+version: v1
+documentation: 
+ - title: Home
+   content: |
+    This API is used for food court payment card enquiry and redemption. The food court payment card workflows can be consumed by external systems through HTTPS based APIs using POST method
+mediaType: application/json
+protocols: HTTPS
+uses:
+ cards_request: /schemas/com.kfc.templates/cards_request/cards_request.raml
+ cards_response: /schemas/com.kfc.templates/cards_response/cards_response.raml
+
+types:
+ REQUEST: cards_request.request
+ RESPONSE: cards_response.response
+ 
+/foodcourt:  
+  /enquiry:
+   description: |
+      Used for food court payment cards enquiry.
+      
+   post: 
+     description: |
+      Used for card enquiry 
+     
+     body: 
+       application/json:
+        type: REQUEST
+        example: !include /samples/cards_post_request.raml
+  
+     responses: 
+          200:
+            body:
+             application/json:
+              type: RESPONSE
+              example: !include /samples/cards_post_response.raml
+          400:
+            body:        
+              type: RESPONSE
+              example: !include /samples/cards_post_response.raml  
+          500:
+            body:
+              type: RESPONSE
+              example: !include /samples/cards_post_response.raml
+          404:
+            body:        
+              type: RESPONSE
+              example: !include /samples/cards_post_response.raml      
+          202:
+            body:        
+               type: RESPONSE
+               example: !include /samples/cards_post_response.raml   
+               
+  /redemption:
+   description: |
+      Used for food court payment cards redemption.
+      
+   post: 
+     description: |
+      Used for card redemption
+     
+     body: 
+       application/json:
+        type: REQUEST
+        example: !include /samples/cards_post_request.raml
+  
+     responses: 
+          200:
+            body:
+             application/json:
+              type: RESPONSE
+              example: !include /samples/cards_post_response.raml
+          400:
+            body:        
+              type: RESPONSE
+              example: !include /samples/cards_post_response.raml  
+          500:
+            body:
+              type: RESPONSE
+              example: !include /samples/cards_post_response.raml
+          404:
+            body:        
+              type: RESPONSE
+              example: !include /samples/cards_post_response.raml      
+          202:
+            body:        
+               type: RESPONSE
+               example: !include /samples/cards_post_response.raml   
+              
+ 
+ 

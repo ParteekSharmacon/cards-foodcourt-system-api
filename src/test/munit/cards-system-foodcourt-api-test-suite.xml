@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:mock="http://www.mulesoft.org/schema/mule/mock" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mock http://www.mulesoft.org/schema/mule/mock/current/mule-mock.xsd">
+    <munit:config mock-connectors="false" mock-inbounds="false" name="munit" doc:name="MUnit configuration"/>
+    <spring:beans>
+        <spring:import resource="classpath:cards-foodcourt-system-api.xml"/>
+        <spring:import resource="classpath:global-exceptions-handler.xml"/>
+        <spring:import resource="classpath:global-configurations.xml"/>
+    </spring:beans>
+    <munit:test name="cards_system_foodcourt_api-test-suite-post-foodCourt-enquiry-flowTest" description="Test">
+        <mock:when messageProcessor=".*:.*" doc:name="Mock Soap consumer For enquiry">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['Soap consumer for enquiry']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#[]" mimeType="application/xml"/>
+        </mock:when>
+        <munit:set payload="#[getResource('sample-request-payload/food-court-request.json').asString()]" mimeType="application/json" doc:name="Set Message"/>
+        <flow-ref name="postFoodcourtEnquiryFlow" doc:name="Flow-ref to post-foodCourt-enquiry-flow"/>
+    </munit:test>
+    <munit:test name="cards_system_foodcourt_api-test-suite-post-foodCourt-redemption-flowTest" description="Test">
+        <mock:when messageProcessor=".*:.*" doc:name="Mock  Soap Consumer for Redemption">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['Soap consumer for redemption ']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#[getResource('sample-response-payload/redemption-response.xml')]" mimeType="application/xml"/>
+        </mock:when>
+        <munit:set payload="#[getResource('sample-request-payload/food-court-request.json')]" mimeType="application/json" doc:name="Set Message"/>
+        <flow-ref name="postFoodcourtRedemptionFlow" doc:name="Flow-ref to post-foodCourt-redemption-flow"/>
+    </munit:test>
+    <munit:test name="cards_system_foodcourt_api-test-suite-cards_system_foodcourt_api_main_flowTest" description="Test">
+        <mock:when messageProcessor=".*:.*" doc:name="Mock HTTP component">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['Invoke food court api']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#[getResource('sample-request-payload/foodCourtRequest.json')]"/>
+        </mock:when>
+        <flow-ref name="cardsSystemFoodcourtAPIMainFlow" doc:name="Flow-ref to cards_system_foodcourt_api_main_flow"/>
+    </munit:test>
+</mule>

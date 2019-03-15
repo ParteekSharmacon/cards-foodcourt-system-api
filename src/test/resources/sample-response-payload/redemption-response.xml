@@ -1,0 +1,11 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+<soap:Body><ns0:Prepaid_Card_Redemption xmlns:ns0="urn:microsoft-dynamics-schemas/codeunit/PrepaidCard">
+  <ns0:cardno>123</ns0:cardno>
+  <ns0:cardamt>100.67</ns0:cardamt>
+  <ns0:recNo/>
+  <ns0:lStoreno/>
+  <ns0:lTerminal/>
+  <ns0:transNo/>
+</ns0:Prepaid_Card_Redemption>
+</soap:Body>
+</soap:Envelope>

@@ -1,0 +1,39 @@
+#%RAML 1.0 Library
+usage: provides a set  data types that  occur in response and error body
+
+
+types: 
+ response:
+  properties:
+    statusCode:
+     displayName: statusCode
+     description: statusCode
+     type: string
+     example: "200"
+    statusMessage:
+     displayName: statusMessage
+     description: statusMessage
+     type: string
+     example: success
+    fields:
+     displayName: fields
+     description: list of response fields
+     type: responseField []
+ responseField:
+  displayName: responseField
+  description: list of response fields
+  type: object
+  properties:
+    fieldName:
+     displayName: fieldName
+     description: name of the response filed
+     type: string
+     example: sample1
+    fieldValue:
+     displayName: fieldValue
+     description: value of the particular field
+     type: string
+     example: iVBORw0KGgoAAAAN
+
+
+       

@@ -1,0 +1,34 @@
+#%RAML 1.0 Library
+usage: provides a set  data types that  occurs in transaction details 
+
+uses:
+  orderType: /schemas/com.kfc.templates/common/retail_order/1.0.0/retail_order.raml
+
+types:
+  txn_details:
+   displayName: txn_details
+   description: transaction details object
+   type: object
+   properties:
+    invoice_no:
+     description: Invoice number of the merchant
+     type: string
+     maxLength: 100
+    order_id:
+     description: Id of the order made.
+     type: string
+     maxLength: 100
+    check_no:
+     description: Check number of the bill
+     type: string
+     maxLength: 100 
+    receipt_no:
+     description: Receipt number of the bill
+     type: string
+     maxLength: 100
+    order_dateTime:
+     type: string
+     maxLength: 30  
+    order_type:
+     type: orderType.orderType
+

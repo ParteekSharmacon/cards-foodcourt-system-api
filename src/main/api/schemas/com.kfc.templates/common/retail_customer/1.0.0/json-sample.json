@@ -1,0 +1,21 @@
+{
+  "Cutomer": {
+    "name": "jhon",
+    "contactNo": "23346778",
+    "emailId": "sdfdf@gmail.com",
+    "address1": "dsfd",
+    "address2": "sdf",
+    "address3": "df",
+    "address4": "df",
+    "address5": "dfdgh",
+    "address6": "dsgf",
+    "locality": "karimedu",
+    "city": "bangalore",
+    "zip_code": "34354",
+    "country": "Indiad",
+    "geo": {
+      "latitude": 102.3,
+      "logitutde": 102.56987
+    }
+  }
+}
