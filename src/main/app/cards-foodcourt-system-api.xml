@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:context="http://www.springframework.org/schema/context"
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
@@ -8,13 +8,18 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
-http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd">
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
     
     <flow name="cardsSystemFoodcourtAPIMainFlow">
         <http:listener config-ref="Cards-Foodcourt-System-API-HTTP-Listener-Config" path="${listener.path}" doc:name="Invoke Foodcourt API" allowedMethods="${listener.method}"/>
         <set-session-variable variableName="messageId" value="#[message.inboundProperties.messageId == null ? message.id : message.inboundProperties.messageId]" doc:name="Set Message Id"/>
+        <object-to-string-transformer doc:name="StreamObj To String"/>
+        <json:json-to-object-transformer returnClass="java.util.LinkedHashMap" doc:name="String To HashMap"/>
+        <set-session-variable variableName="originalReqPayload" value="#[payload]" doc:name="Save Req Payload - SessionVars"/>
+        <json:object-to-json-transformer doc:name="Map to JSON"/>
         <apikit:router config-ref="Cards_Foodcourt_System_API_Config" doc:name="APIkit Router" />
-        <exception-strategy ref="global-exception-Strategy" doc:name="Reference Exception Strategy" />
+        <exception-strategy ref="Global_Exception_Strategy" doc:name="Reference Exception Strategy" />
     </flow>
     <flow name="cardsSystemFoodcourtAPIConsole">
         <http:listener config-ref="Cards-Foodcourt-System-API-HTTP-Listener-Config" path="/console/system/cards/foodcourt/*" doc:name="Invoke Foodcourt API" />
@@ -24,6 +29,15 @@ http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/cu
     <flow name="postFoodcourtEnquiryFlow">
      <logger message="***************** Begin of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************" level="INFO" doc:name="Init Beginning Of Logger With Flowname And MessageId" />
 
+       <message-properties-transformer scope="invocation" doc:name="Set Flow And App Names - Msg Prop">
+            <add-message-property key="appName" value="#[app.name]"/>
+            <add-message-property key="flowName" value="#[mule:context.serviceName]"/>
+            <add-message-property key="actionType" value="enquiry"/>
+        </message-properties-transformer>
+        <object-to-string-transformer doc:name="Json to String"/>
+        <async doc:name="Async">
+            <flow-ref name="pushReqMsgQueueSubFlow" doc:name="pushReqMsgQueueSubFlow"/>
+        </async>
         <dw:transform-message doc:name="Prepare Enquiry Payload">
             
             <dw:set-payload resource="classpath:dataweave/enquiry.dwl"/>
@@ -33,15 +47,28 @@ http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/cu
         <until-successful maxRetries="3" millisBetweenRetries="30000" synchronous="true" doc:name="Until Successful">
             <ws:consumer config-ref="Cards-Foodcourt-System-API-Web-Service-Consumer" operation="PrepaidCard_Balance" doc:name="Soap Consumer For Enquiry"/>
         </until-successful>
+        <object-to-string-transformer doc:name="Json to String"/>
+        <async doc:name="Async">
+            <flow-ref name="pushResMsgQueueSubFlow" doc:name="pushResMsgQueueSubFlow"/>
+        </async>
         <logger message="***************** End  of the  #[mule:context.serviceName]  with unique messageId: #[sessionVars.messageId] *************************" level="INFO" doc:name="Init End Of Logger With Flowname And MessageId"/>
         <remove-session-variable variableName="messageId" doc:name="Remove Message Id"/>
 
         <!-- <logger level="INFO" doc:name="Log Enquiry Payload" message="#[payload]" />
         <logger message="#[flowVars.messageId]" level="INFO" doc:name="Log Message Id" /> -->
-        <exception-strategy ref="global-exception-Strategy" doc:name="Reference Exception Strategy"/>   
+        <exception-strategy ref="Global_Exception_Strategy" doc:name="Reference Exception Strategy"/>   
     </flow>
     <flow name="postFoodcourtRedemptionFlow">
         <logger message="***************** Begin of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************" level="INFO" doc:name="Init Beginning Of Logger With Flowname And MessageId" />
+		<message-properties-transformer scope="invocation" doc:name="Set Flow And App Names - Msg Prop">
+            <add-message-property key="appName" value="#[app.name]"/>
+            <add-message-property key="flowName" value="#[mule:context.serviceName]"/>
+            <add-message-property key="actionType" value="redemption"/>
+        </message-properties-transformer>
+        <object-to-string-transformer doc:name="Json to String"/>
+        <async doc:name="Async">
+            <flow-ref name="pushReqMsgQueueSubFlow" doc:name="pushReqMsgQueueSubFlow"/>
+        </async>
 
         <dw:transform-message doc:name="Prepare Redemption Payload">
             <dw:set-payload resource="classpath:dataweave/redemption.dwl"/>
@@ -50,12 +77,16 @@ http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/cu
         <until-successful maxRetries="3" millisBetweenRetries="30000" synchronous="true" doc:name="Until Successful">
             <ws:consumer config-ref="Cards-Foodcourt-System-API-Web-Service-Consumer" operation="Prepaid_Card_Redemption" doc:name="Soap Consumer For Redemption "/>
         </until-successful>
+        <object-to-string-transformer doc:name="Json to String"/>
+        <async doc:name="Async">
+            <flow-ref name="pushResMsgQueueSubFlow" doc:name="pushResMsgQueueSubFlow"/>
+        </async>
         <logger message="***************** End  of the  #[mule:context.serviceName]  with unique messageId: #[sessionVars.messageId] *************************" level="INFO" doc:name="Init End Of Logger With Flowname And MessageId"/>
         <remove-session-variable variableName="messageId" doc:name="Remove Message Id"/>
 
       <!--   <logger message="#[payload]" level="INFO" doc:name="Log Redemption Payload" />
         <logger message="end of  Redemption subflow : #[flowVars.messageId]" level="INFO" doc:name="Log Message Id" /> -->
-        <exception-strategy ref="global-exception-Strategy" doc:name="Reference Exception Strategy"/>
+        <exception-strategy ref="Global_Exception_Strategy" doc:name="Reference Exception Strategy"/>
         </flow>
    
     

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit"
-	xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:bti="http://www.mulesoft.org/schema/mule/ee/bti"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:ws="http://www.mulesoft.org/schema/mule/ws"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/bti http://www.mulesoft.org/schema/mule/ee/bti/current/mule-bti-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
 http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
@@ -13,17 +18,35 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
 	<context:property-placeholder location="properties/dev.properties" />
 	<http:listener-config name="Cards-Foodcourt-System-API-HTTP-Listener-Config"
-		host="${listener.host}" port="${listener.port}" doc:name="HTTP Listener Configuration" connectionIdleTimeout="${request.connection.idle.timeout}"/>
+		host="${listener.host}" port="${listener.port}" doc:name="HTTP Listener Configuration"
+		connectionIdleTimeout="${request.connection.idle.timeout}" />
 	<apikit:config name="Cards_Foodcourt_System_API_Config"
 		raml="cards_foodcourt_system_api.raml" consoleEnabled="false"
 		doc:name="Router" keepRamlBaseUri="false">
-        <apikit:flow-mapping resource="/foodcourt/enquiry" action="post" content-type="application/json" flow-ref="postFoodcourtEnquiryFlow"/>
-        <apikit:flow-mapping resource="/foodcourt/redemption" action="post" content-type="application/json" flow-ref="postFoodcourtRedemptionFlow"/>
+		<apikit:flow-mapping resource="/foodcourt/enquiry"
+			action="post" content-type="application/json" flow-ref="postFoodcourtEnquiryFlow" />
+		<apikit:flow-mapping resource="/foodcourt/redemption"
+			action="post" content-type="application/json" flow-ref="postFoodcourtRedemptionFlow" />
 
 	</apikit:config>
 	<ws:consumer-config name="Cards-Foodcourt-System-API-Web-Service-Consumer"
 		wsdlLocation=".\src\main\wsdl\food-court-wsdl.xml" service="PrepaidCard"
 		port="PrepaidCard_Port" serviceAddress="${service.address}" doc:name="Web Service Consumer" />
+	<bti:transaction-manager doc:name="Bitronix Transaction Manager" />
+	<db:mysql-config name="MySQL_Configuration" host="${db.host}"
+		port="${db.port}" user="${db.user}" password="${db.password}"
+		database="${db.database}" doc:name="MySQL Configuration">
+		<reconnect frequency="3000" count="3" />
+	</db:mysql-config>
+	<ee:object-store-caching-strategy
+		name="Caching_Strategy" keyGenerationExpression="#[flowVars.postdata.merchant_channel_name]"
+		doc:name="Caching Strategy">
+		<in-memory-store name="sample" maxEntries="${caching.maxEntries}"
+			entryTTL="${caching.ttl}" expirationInterval="${caching.expirationCheckInterval}" />
+	</ee:object-store-caching-strategy>
+	<jms:activemq-connector name="Active_MQ"
+		specification="1.1" username="admin" password="admin" brokerURL="tcp://localhost:61616"
+		validateConnections="true" doc:name="Active MQ" maxRedelivery="-1" />
 
 
 </mule>

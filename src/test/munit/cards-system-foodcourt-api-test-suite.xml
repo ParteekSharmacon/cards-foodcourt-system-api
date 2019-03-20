@@ -9,6 +9,9 @@ http://www.mulesoft.org/schema/mule/mock http://www.mulesoft.org/schema/mule/moc
         <spring:import resource="classpath:cards-foodcourt-system-api.xml"/>
         <spring:import resource="classpath:global-exceptions-handler.xml"/>
         <spring:import resource="classpath:global-configurations.xml"/>
+        <spring:import resource="classpath:initiate_error_handler.xml"/>
+        <spring:import resource="classpath:initiate_logging.xml"/>
+        <spring:import resource="classpath:initiate_mail_notification.xml"/>
     </spring:beans>
     <munit:test name="cards_system_foodcourt_api-test-suite-post-foodCourt-enquiry-flowTest" description="Test">
         <mock:when messageProcessor=".*:.*" doc:name="Mock Soap consumer For enquiry">

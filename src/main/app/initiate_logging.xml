@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jbossts="http://www.mulesoft.org/schema/mule/jbossts"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bti="http://www.mulesoft.org/schema/mule/ee/bti"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/bti http://www.mulesoft.org/schema/mule/ee/bti/current/mule-bti-ee.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/jbossts http://www.mulesoft.org/schema/mule/jbossts/current/mule-jbossts.xsd">
+	<sub-flow name="pushReqMsgQueueSubFlow">
+		<logger
+			message="***************** Begin of the pushReqMsgQueueSubFlow with unique messageId: #[sessionVars.messageId] ******************"
+			level="INFO" doc:name="Init Beginning Of Logger With Flowname And MessageId" />
+		<dw:transform-message doc:name="Prepare Logger Request Queue Msg Payload">
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	storeId: payload.storeId,
+	terminalId: payload.terminalId,
+	orderType: payload.txn_Details.order_type,
+	invoice_no: payload.txn_Details.invoice_no,
+	check_no: payload.txn_Details.check_no,
+	receipt_no: payload.txn_Details.receipt_no,
+	txn_dateTime: payload.txn_Details.order_dateTime default now as :datetime {format: "yyyy-MM-dd HH:mm:ss"},
+	merchant_order_id: payload.txn_Details.order_id,
+	customer_name: payload.customerDetails.name,
+	customer_no: payload.customerDetails.contactNo,
+	merchant_channel_name: payload.source_channel_name,
+	external_channel_name: payload.target_channel_name,
+	request_payload: payload,
+	app_name: flowVars.appName as :string,
+	flow_name: flowVars.flowName as :string,
+	actionType: flowVars.actionType as :string,
+	api_layer_name: "System" as :string,
+	messageId: sessionVars.messageId,
+	createdBy: 'Mule'
+}]]></dw:set-payload>
+		</dw:transform-message>
+
+
+
+
+		<object-to-string-transformer doc:name="Json To String" />
+        <jms:outbound-endpoint queue="${request.loggermetadata.queue}" connector-ref="Active_MQ" doc:name="Push Request Message to ActiveMQ"/>
+		<logger
+			message="***************** End of the pushReqMsgQueueSubFlow with unique messageId: #[sessionVars.messageId] ******************"
+			level="INFO" doc:name="Init End Of Logger With Flowname And MessageId" />
+
+
+
+
+	</sub-flow>
+
+	<flow name="pullReqMsgQueueFlow">
+		<jms:inbound-endpoint queue="${request.loggermetadata.queue}"
+			connector-ref="Active_MQ" doc:name="Pull Request Message From ActiveMQ">
+
+
+		</jms:inbound-endpoint>
+		<logger
+			message="***************** Begin of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
+			level="INFO" doc:name="Init Beginning Of Logger With Flowname And MessageId" />
+
+		<json:json-to-object-transformer
+			doc:name="Json To Object" />
+		<ee:xa-transactional action="ALWAYS_BEGIN"
+			doc:name="Transactional">
+			<db:insert config-ref="MySQL_Configuration" doc:name="Insert Request Metadata To DB">
+				<db:parameterized-query><![CDATA[INSERT INTO `kfc`.`request_logger_metadata` (`storeId`, `terminalId`, `orderType`, `invoice_no`, `check_no`, `receipt_no`, `merchant_order_id`, `txn_dateTime`, `customer_name`, `customer_no`, `merchant_channel_name`, `external_channel_name`, `request_payload`, `app_name`, `flow_name`, `api_layer_name`, `actionType`, `messageId`, `createdBy`) VALUES (#[json:storeId],#[json:terminalId],#[json:orderType],#[json:invoice_no],#[json:check_no],#[json:receipt_no],#[json:merchant_order_id],#[json:txn_dateTime],#[json:customer_name],#[json:customer_no],#[json:merchant_channel_name],#[json:external_channel_name],#[json:request_payload],#[json:app_name],#[json:flow_name],#[json:api_layer_name],#[json:actionType],#[json:messageId],#[json:createdBy]);]]></db:parameterized-query>
+
+
+			</db:insert>
+		</ee:xa-transactional>
+		<logger
+			message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
+			level="INFO" doc:name="Init End Of Logger With Flowname And MessageId" />
+
+
+
+
+
+	</flow>
+	<sub-flow name="pushResMsgQueueSubFlow">
+		<logger
+			message="***************** Begin of the pushResMsgQueueSubFlow with unique messageId: #[sessionVars.messageId] ******************"
+			level="INFO" doc:name="Init Beginning Of Logger With Flowname And MessageId" />
+
+		<dw:transform-message doc:name="Prepare Logger Response Queue Msg Payload"
+			metadata:id="5af03891-f597-4b9e-b59d-1ada64d5fc30">
+			<dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	external_channel_code: flowVars.external_channel_code as :string,
+	external_channel_message: flowVars.external_channel_message as :string,
+	response_payload: payload,
+	api_layer_name: "System",
+	messageId: sessionVars.messageId,
+	createdBy: "Mule"
+}]]></dw:set-payload>
+		</dw:transform-message>
+		<object-to-string-transformer doc:name="Json To String" />
+		<jms:outbound-endpoint queue="${response.loggermetadata.queue}"
+			connector-ref="Active_MQ" doc:name="Push Response Message to ActiveMQ" />
+		<logger
+			message="***************** End of the pushResMsgQueueSubFlow with unique messageId: #[sessionVars.messageId] ******************"
+			level="INFO" doc:name="Init End Of Logger With Flowname And MessageId" />
+	</sub-flow>
+	<flow name="pullResMsgQueueFlow">
+		<jms:inbound-endpoint queue="${response.loggermetadata.queue}"
+			connector-ref="Active_MQ" doc:name="Pull Response Message From ActiveMQ" />
+		<logger
+			message="***************** Begin of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
+			level="INFO" doc:name="Init Beginning Of Logger With Flowname And MessageId" />
+		<json:json-to-object-transformer
+			doc:name="Json To Object" />
+		<ee:xa-transactional action="ALWAYS_BEGIN"
+			doc:name="Transactional">
+			<db:insert config-ref="MySQL_Configuration" doc:name="Insert Response Metadata To DB">
+				<db:parameterized-query><![CDATA[INSERT INTO `kfc`.`response_logger_metadata`
+(`external_channel_code`,
+`external_channel_message`,
+`response_payload`,
+`api_layer_name`,
+`messageId`)
+VALUES
+(#[json:external_channel_code],#[json:external_channel_message],#[json:response_payload],#[json:api_layer_name],#[json:messageId]);]]></db:parameterized-query>
+
+			</db:insert>
+		</ee:xa-transactional>
+		<logger
+			message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
+			level="INFO" doc:name="Init End Of Logger With Flowname And MessageId" />
+
+	</flow>
+</mule>
