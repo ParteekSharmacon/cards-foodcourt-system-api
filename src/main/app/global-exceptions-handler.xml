@@ -77,7 +77,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			<async doc:name="Async">
 				<expression-filter expression="#[flowVars.mailNotification == 1]"
 					doc:name="Validate Mail Notification Flag" />
-				<flow-ref name="pushMailNotificationFlow" doc:name="Invoke Mail Notification Framework" />
+				<flow-ref name="pushMailNotificationSubFlow" doc:name="Invoke Mail Notification Framework" />
 			</async>
 			<logger
 				message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
@@ -137,7 +137,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			<async doc:name="Async">
 				<expression-filter expression="#[flowVars.mailNotification == 1]"
 					doc:name="Validate Mail Notification Flag" />
-				<flow-ref name="pushMailNotificationFlow" doc:name="Invoke Mail Notification Framework" />
+				<flow-ref name="pushMailNotificationSubFlow" doc:name="Invoke Mail Notification Framework" />
 			</async>
 			<logger
 				message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
@@ -196,7 +196,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			<async doc:name="Async">
 				<expression-filter expression="#[flowVars.mailNotification == 1]"
 					doc:name="Validate Mail Notification Flag" />
-				<flow-ref name="pushMailNotificationFlow" doc:name="Invoke Mail Notification Framework" />
+				<flow-ref name="pushMailNotificationSubFlow" doc:name="Invoke Mail Notification Framework" />
 			</async>
 			<logger
 				message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
@@ -255,7 +255,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			<async doc:name="Async">
 				<expression-filter expression="#[flowVars.mailNotification == 1]"
 					doc:name="Validate Mail Notification Flag" />
-				<flow-ref name="pushMailNotificationFlow" doc:name="Invoke Mail Notification Framework" />
+				<flow-ref name="pushMailNotificationSubFlow" doc:name="Invoke Mail Notification Framework" />
 			</async>
 			<logger
 				message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
@@ -314,7 +314,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			<async doc:name="Async">
 				<expression-filter expression="#[flowVars.mailNotification == 1]"
 					doc:name="Validate Mail Notification Flag" />
-				<flow-ref name="pushMailNotificationFlow" doc:name="Invoke Mail Notification Framework" />
+				<flow-ref name="pushMailNotificationSubFlow" doc:name="Invoke Mail Notification Framework" />
 			</async>
 			<logger
 				message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
@@ -376,7 +376,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			<async doc:name="Async">
 				<expression-filter expression="#[flowVars.mailNotification == 1]"
 					doc:name="Validate Mail Notification Flag" />
-				<flow-ref name="pushMailNotificationFlow" doc:name="Invoke Mail Notification Framework" />
+				<flow-ref name="pushMailNotificationSubFlow" doc:name="Invoke Mail Notification Framework" />
 			</async>
 			<logger
 				message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
@@ -436,7 +436,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			<async doc:name="Async">
 				<expression-filter expression="#[flowVars.mailNotification == 1]"
 					doc:name="Validate Mail Notification Flag" />
-				<flow-ref name="pushMailNotificationFlow" doc:name="Invoke Mail Notification Framework" />
+				<flow-ref name="pushMailNotificationSubFlow" doc:name="Invoke Mail Notification Framework" />
 			</async>
 			<logger
 				message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
@@ -494,7 +494,7 @@ http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee
 			<async doc:name="Async">
 				<expression-filter expression="#[flowVars.mailNotification == 1]"
 					doc:name="Validate Mail Notification Flag" />
-				<flow-ref name="pushMailNotificationFlow" doc:name="Invoke Mail Notification Framework" />
+				<flow-ref name="pushMailNotificationSubFlow" doc:name="Invoke Mail Notification Framework" />
 			</async>
 			<logger
 				message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"

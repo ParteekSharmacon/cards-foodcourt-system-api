@@ -9,11 +9,14 @@ types:
       type: string
       description: card_no
       maxLength: 30
+      pattern: ^[a-zA-Z0-9][-a-zA-Z0-9]*$
      card_pin:
       type: string
       description: card_pin
-      maxLength: 10
+      maxLength: 6
+      pattern: ^[a-zA-Z0-9][-a-zA-Z0-9]*$
      card_amt:
       type: number
+      maximum: 999999999
       multipleOf: 0.01
       description: card_amt

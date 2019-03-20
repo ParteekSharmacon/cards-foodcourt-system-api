@@ -24,9 +24,9 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 		<spring:bean id="decode" name="decoder"
 			class="com.kfc.experience.mail.DecodeBase64ToString" />
 	</spring:beans>
-	<flow name="pushMailNotificationFlow">
+	<sub-flow name="pushMailNotificationSubFlow">
 		<logger
-			message="***************** Begin of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
+			message="***************** Begin of the pushMailNotificationSubFlow with unique messageId: #[sessionVars.messageId] ******************"
 			level="INFO" doc:name="Init Beginning Of Logger With Flowname And MessageId" />
 		<invoke object-ref="encoder" method="encode"
 			methodArguments="#[sessionVars.originalReqPayload]" doc:name="Encode Request Payload" />
@@ -61,9 +61,9 @@ http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/jso
 			connector-ref="Active_MQ" doc:name="Push Mail Message to ActiveMQ">
 		</jms:outbound-endpoint>
 		<logger
-			message="***************** End of the #[mule:context.serviceName] with unique messageId: #[sessionVars.messageId] ******************"
+			message="***************** End of the pushMailNotificationSubFlow with unique messageId: #[sessionVars.messageId] ******************"
 			level="INFO" doc:name="Init End Of Logger With Flowname And MessageId" />
-	</flow>
+	</sub-flow>
 
 
 	<flow name="pullMailNotificationFlow">

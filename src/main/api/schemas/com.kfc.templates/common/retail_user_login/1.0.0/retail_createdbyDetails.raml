@@ -6,18 +6,22 @@ types:
   description: login user to POS systems
   type: string
   maxLength: 50
+  pattern: "[^,\\[\\]]+"
  createdDateTime: 
   displayName: createdDateTime
   description: yyyy-MM-dd HH24:mm
   type: string
   maxLength: 30
+  pattern: "[^,\\[\\]]+"
  source_channel_name:
   displayName: source_channel_name
   description: Source channel name from which transaction is made
   type: string
   maxLength: 100
+  pattern: "[^,\\[\\]]+"
  target_channel_name:
   displayName: target_channel_name
   description: Target channel name for which transaction is made
   type: string
   maxLength: 100
+  pattern: "[^,\\[\\]]+"

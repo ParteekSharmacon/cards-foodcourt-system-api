@@ -14,21 +14,26 @@ types:
      description: Invoice number of the merchant
      type: string
      maxLength: 100
+     pattern: "[^,\\[\\]]+"
     order_id:
      description: Id of the order made.
      type: string
      maxLength: 100
+     pattern: ^[a-zA-Z0-9][-a-zA-Z0-9]*$
     check_no:
      description: Check number of the bill
      type: string
      maxLength: 100 
+     pattern: "[^,\\[\\]]+"
     receipt_no:
      description: Receipt number of the bill
      type: string
      maxLength: 100
+     pattern: "[^,\\[\\]]+"
     order_dateTime:
      type: string
-     maxLength: 30  
+     maxLength: 30 
+     pattern: "[^,\\[\\]]+" 
     order_type:
      type: orderType.orderType
 
